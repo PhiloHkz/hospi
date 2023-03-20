@@ -1,5 +1,5 @@
 import connectionPromise from './connexion.js';
-class Rendezvous {
+class departements {
     static getAll = async () => {
         const connection = await connectionPromise;
         const resultat = await connection.all(`
