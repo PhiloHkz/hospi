@@ -1,0 +1,82 @@
+CREATE TABLE roles (
+    rolesID INTEGER PRIMARY KEY,
+    nom TEXT NOT NULL
+);
+
+CREATE TABLE users (
+    userID INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom TEXT NOT NULL,
+    prenom TEXT NOT NULL,
+    photo TEXT,
+    telephone TEXT,
+    email TEXT NOT NULL,
+    mot_de_pass TEXT NOT NULL,
+    rolesID INTEGER NOT NULL,
+    FOREIGN KEY(rolesID) REFERENCES roles(rolesID)
+);
+
+CREATE TABLE departements (
+    departementsID INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom TEXT UNIQUE NOT NULL,
+    createdby INTEGER NOT NULL,
+    FOREIGN KEY(createdby) REFERENCES users(userID)
+);
+
+CREATE TABLE hospitals (
+    hospitalsID INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom TEXT,
+    address TEXT,
+    createdby INTEGER NOT NULL,
+    FOREIGN KEY(createdby) REFERENCES users(userID)
+);
+
+CREATE TABLE doctors (
+    doctorsID INTEGER PRIMARY KEY AUTOINCREMENT,
+    userID INTEGER NOT NULL,
+    createdby INTEGER NOT NULL,
+    departementsID INTEGER NOT NULL,
+     hospitalsID INTEGER NOT NULL,
+    FOREIGN KEY(userID) REFERENCES users(userID),
+   FOREIGN KEY(createdby) REFERENCES users(userID),
+   FOREIGN KEY(departementsID) REFERENCES departements(departementsID),
+   FOREIGN KEY(hospitalsID) REFERENCES hospitals(hospitalsID)
+);
+
+CREATE TABLE hospitalsdepartements (
+    departementsID INTEGER NOT NULL,
+    hospitalsID INTEGER NOT NULL,
+    price INTEGER,
+    CONSTRAINT hospitalsDepartmentID PRIMARY KEY(departementsID, hospitalsID)
+    FOREIGN KEY(departementsID) REFERENCES departements(departementsID),
+    
+    FOREIGN KEY(hospitalsID) REFERENCES hospitals(hospitalsID)
+    
+    
+);
+
+CREATE TABLE rendezvous (
+    rdvID INTEGER PRIMARY KEY AUTOINCREMENT,
+    patientID INTEGER NOT NULL,
+        departementsID INTEGER NOT NULL,
+        hospitalsID INTEGER NOT NULL,
+         date_de_rendez_vous TEXT NOT NULL,
+         paid TEXT  NOT NULL,
+    FOREIGN KEY(patientID) REFERENCES users(userID),
+
+    FOREIGN KEY(departementsID) REFERENCES departements(departementsID),
+    
+    FOREIGN KEY(hospitalsID) REFERENCES hospitals(hospitalsID)
+   
+    
+);
+
+CREATE TABLE consultations (
+    consultationsID INTEGER PRIMARY KEY AUTOINCREMENT,
+    doctorsID INTEGER NOT NULL,
+    rendezvousID INTEGER NOT NULL,
+    rapport TEXT NOT NULL,
+    FOREIGN KEY(doctorsID) REFERENCES doctors(doctorsID),
+    
+    FOREIGN KEY(rendezvousID) REFERENCES rendezvous(rdvID)
+    
+);
